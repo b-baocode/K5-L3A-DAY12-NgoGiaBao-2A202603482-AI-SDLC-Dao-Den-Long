@@ -1,6 +1,6 @@
 # AGENTS.md — Đảo Đèn Lồng
 
-3D third-person game (Three.js + Vite), 3 nights, with a headless mode graded by **Test Contract v1.1** (Ticket-02).
+3D third-person game (Three.js + Vite), 3 nights, with a headless mode graded by **Test Contract v1.2** (Ticket-03 lantern fuel).
 
 ## Commands
 - Install: `npm install` · Play: `npm start` · Build: `npm run build`
@@ -21,7 +21,10 @@
 ## Rules
 - Contract wording beats your intuition: quote the lab board text when unsure; log new assumptions in `docs/notes/phase-N.md`.
 - Tick model: step k reads input of tick k -> state k+1; events carry tick k+1. Pause: `tick` advances, `sim_tick` frozen.
-- Shade states must be exactly: spawning, wander, chase, recoil, stunned. Mote `kind` is random/dropped (creative field = `variant`).
+- Shade states must be exactly: spawning, wander, chase, recoil, stunned, drain. Mote `kind` is random/dropped (creative field = `variant`).
+- Lantern fuel is integer 1/60 units (`RULES.fuelUnit`); never store fractional fuel. Use `hasZone()`, `lanternNeed()`,
+  `capacity`, `winNeed()` instead of re-deriving those rules (design: docs/adr/0001-lantern-fuel-and-dawn-win.md).
+- A rule replaced by a ticket: change the test and mark it `// Ticket-0N [THAY THẾ]: <why>`; list it in docs/notes/phase-N.md and CHANGELOG.md.
 - Tests: a new button press needs at least one released tick in between (the `press()` helper does not release by itself).
 - Distances are XZ only, "within r" means `<= r`. Round output coords to 3 decimals.
 - Creative extras must not change headless output: they sit behind `extras` (web only); `tests/extras.test.js` forbids `extras` in headless.js.

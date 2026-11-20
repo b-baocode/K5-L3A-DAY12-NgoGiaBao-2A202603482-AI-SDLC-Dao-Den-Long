@@ -3,7 +3,7 @@ name: verify
 description: Run the game headless against scenarios and save phase evidence. Use after any change to src/sim or game.contract.json, and before tagging a phase.
 ---
 
-1. `npm test` — rule, contract (v1.1) and extras tests. All must pass. One full night must stay well under 30 s.
+1. `npm test` — rule, fuel (v1.2), contract and extras tests. All must pass. One full night must stay well under 30 s.
 2. New behaviour? Add a `scenarios/<name>.scenario.json` (+ `<name>.inputs.json`) and an entry with `night`, a
    plain-language `desc` and an `expect` check in `scripts/proof.js` (`scenarioFrom`/`inputsFrom` reuse files).
 3. `npm run proof -- phase-N` — runs each scenario twice through the real CLI, checks byte-identical
