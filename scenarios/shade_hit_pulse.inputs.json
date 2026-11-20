@@ -1,5 +1,5 @@
 { "frames": [
   { "tick": 0, "move": [0, 0] },
-  { "tick": 150, "pulse": true }, { "tick": 151, "pulse": false },
+  { "tick": 60, "pulse": true }, { "tick": 61, "pulse": false },
   { "tick": 400, "pulse": true }, { "tick": 401, "pulse": false }
 ] }

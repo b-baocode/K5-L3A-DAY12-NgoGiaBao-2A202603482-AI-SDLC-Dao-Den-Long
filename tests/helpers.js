@@ -10,8 +10,12 @@ export const CONTRACT = JSON.parse(fs.readFileSync(path.join(ROOT, 'game.contrac
 export const T = CONTRACT.tuning;
 
 // A quiet world: nothing random, only what the test places.
-export function quietGame(extra = {}, seed = 1) {
-  return new Game(T, { seed, scenario: { random_motes: false, random_shades: false, motes: [], shades: [], ...extra } });
+export function quietGame(extra = {}, seed = 1, night = 1) {
+  return new Game(T, {
+    seed,
+    night,
+    scenario: { random_motes: false, random_shades: false, random_drifters: false, wind_enabled: false, motes: [], shades: [], ...extra },
+  });
 }
 
 // Run n steps with a fixed held input; returns all events.
