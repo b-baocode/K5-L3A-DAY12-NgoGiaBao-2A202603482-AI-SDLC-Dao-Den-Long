@@ -8,7 +8,9 @@
 | Scenario proof | 6 | 14 | 19 | 19 (giống từng byte phase-3) |
 | Test cũ phải sửa/xóa | — | 11 (ghi lý do) | 7 (ghi lý do) | 1 (version contract) |
 | Commit / tag | 7 / phase-1 | 6 / phase-2 | 5 / phase-3 | … / phase-4 + v1.0.0 |
-| Token / chi phí AI | _(điền)_ | _(điền)_ | _(điền)_ | _(điền)_ |
+| Lượt gọi AI | 76 | 44 | 23 | 101 |
+| Token đầu ra | 96.934 | 117.156 | 54.288 | 177.323 |
+| Token đầu vào (gồm đọc cache) | 12,3 tr | 14,3 tr | 9,9 tr | 60,7 tr |
 
 ## Đánh giá từng phase
 - **Phase 1:** đạt toàn bộ PRD-0. Kiến trúc tách `src/sim` (luật thuần, tất định) khỏi `src/web` là quyết định đúng nhất của cả dự án: mọi phase sau chỉ cần sửa sim + test, headless/bench/soak dùng lại cùng code.
@@ -39,7 +41,8 @@
 3. **AGENTS.md** cập nhật mỗi phase (quy tắc `[THAY THẾ]`, "một lần bấm cần một tick nhả nút", đơn vị dầu nguyên…) — các lỗi đã gặp không lặp lại.
 
 ## Token và cách tiết kiệm
-- Tổng ước tính: _(điền từ `/cost` hoặc trang usage: tổng 4 phase)_.
+- **Tổng (đo từ log phiên Claude Code, model claude-opus-5-5, không dùng subagent):** 244 lượt gọi · **445.701 token đầu ra** · 97,2 triệu token đầu vào, trong đó **96,5 triệu (99 %) là đọc prompt cache**, 0,67 triệu ghi cache, chỉ 544 token đầu vào không cache.
+- **Nhận xét:** chi phí chủ yếu nằm ở việc đọc lại ngữ cảnh dài mỗi lượt. Phase 4 tốn đầu vào gấp 4–6 lần các phase khác dù số lượt gọi chỉ gấp 1,3–4 lần, vì hội thoại đã rất dài (mỗi lượt đọc lại toàn bộ lịch sử). Làm lại: mở phiên mới (hoặc `/compact`) đầu mỗi phase, chỉ mang theo AGENTS.md + ghi chú phase trước.
 - Tiết kiệm: đọc tài liệu một lần rồi tóm tắt; sửa nhiều chỗ bằng một script có `assert` mỗi đoạn thay vì nhiều lần edit; chạy test theo file khi đang sửa; mỗi tính năng một scenario nhỏ; không cho agent chơi game dài — dùng headless.
 
 ## Nếu làm lại
