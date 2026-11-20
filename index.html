@@ -11,6 +11,9 @@
       #h-flames { top: 14px; left: 16px; font-size: 26px; letter-spacing: 4px; }
       #h-time { top: 12px; left: 50%; transform: translateX(-50%); font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
       #h-time.danger { color: var(--danger); animation: blink 1s steps(2) infinite; }
+      body.cb { --danger: #ffffff; }
+      body.cb #h-time.danger::before { content: '⚠ '; }
+      #h-goal { font-size: 13px; opacity: .85; }
       @keyframes blink { 50% { opacity: .25; } }
       #h-right { top: 12px; right: 16px; text-align: right; font-size: 17px; line-height: 1.5; }
       #h-right b { color: var(--gold); font-size: 22px; }
@@ -50,8 +53,9 @@
     <div id="h-charm" class="hud"></div>
     <div id="h-time" class="hud"></div>
     <div id="h-wind" class="hud"></div>
-    <div id="h-right" class="hud"><div>Đèn <span id="h-lit"></span></div><div><b id="h-score"></b></div></div>
+    <div id="h-right" class="hud"><div>Đèn <span id="h-lit"></span></div><div id="h-goal"></div><div><b id="h-score"></b></div></div>
     <div id="h-motes" class="hud"></div>
+    <div id="h-carry" class="hud" style="bottom:46px;left:50%;transform:translateX(-50%);font-size:14px"></div>
     <div id="h-cd" class="hud">
       <div class="cd" id="cd-dash"><div class="fill"></div><span>Lướt<br />Shift</span></div>
       <div class="cd" id="cd-pulse"><div class="fill"></div><span>Tỏa<br />F</span></div>
@@ -60,7 +64,7 @@
     <div id="h-arrow" class="hud"></div>
     <div id="legend">
       Đom đóm<i style="background:#fff6c2"></i><br />Vàng Kim ×2<i style="background:#ffa800"></i><br />Ngọc Lam +1 lửa<i style="background:#5fffe0"></i><br />
-      Mực Lướt: nhanh<i style="background:#7a3cff"></i><br />Mực Khổng Lồ: với xa<i style="background:#120a1a;border:1px solid #7a3cff"></i><br />Gió Lạc: cướp đom đóm<i style="background:#8fa3b8"></i>
+      Mực Lướt: nhanh<i class="rimdot" style="background:#7a3cff"></i><br />Mực Khổng Lồ: với xa<i style="background:#120a1a;border:1px solid #7a3cff"></i><br />Gió Lạc: cướp đom đóm<i style="background:#8fa3b8"></i>
     </div>
     <div id="toast"></div>
     <div id="fps"></div>
@@ -68,7 +72,7 @@
     <!-- screens -->
     <div id="s-menu" class="screen on"><div class="card">
       <h1>Đảo Đèn Lồng</h1><h2>Ba hòn đảo · ba đêm sương</h2>
-      <p>Giúp Mây gom đom đóm, thắp lại các Đèn Lồng Lớn trước bình minh.</p>
+      <p>Giúp Mây gom đom đóm, thắp và <b>giữ</b> các Đèn Lồng Lớn sáng tới bình minh. Đèn cạn dầu sẽ tắt — châm thêm đom đóm để giữ lửa!</p>
       <div class="btns"><button data-act="start">Bắt đầu Đêm 1</button><button data-act="night2">Chơi Đêm 2</button><button data-act="night3">Chơi Đêm 3</button><button data-act="settings">Cài đặt</button></div>
       <p style="font-size:13px;opacity:.75">WASD di chuyển · kéo chuột xoay camera · Space nhảy · Shift lướt · E nạp đèn · F tỏa sáng · Esc/P tạm dừng</p>
     </div></div>
@@ -92,6 +96,7 @@
       <h1>Cài đặt</h1>
       <label>Âm lượng <input id="set-vol" type="range" min="0" max="1" step="0.05" /></label>
       <label>Độ nhạy chuột <input id="set-sens" type="range" min="0.1" max="1" step="0.05" /></label>
+      <label style="display:flex;gap:10px;align-items:center"><input id="set-cb" type="checkbox" /> Bảng màu dễ phân biệt (mù màu)</label>
       <div class="btns"><button data-act="settings-back">Xong</button></div>
     </div></div>
     <script type="module" src="/src/web/main.js"></script>
