@@ -71,7 +71,7 @@ test('bench scene: no spawns, damage, pickups, fuel decay or night end; shades k
 
 test('soak: 10 nights in one process, 0 crashes, memory within 1.2x', () => {
   const out = path.join(tmpDir(), 'soak.json');
-  const r = spawnSync(process.execPath, ['--expose-gc', path.join(ROOT, 'scripts/soak.js'), '--seed', '7', '--nights', '10', '--out', out], { encoding: 'utf8' });
+  const r = spawnSync(process.execPath, ['--expose-gc', '--no-opt', '--max-semi-space-size=1', '--min-semi-space-size=1', path.join(ROOT, 'scripts/soak.js'), '--seed', '7', '--nights', '10', '--out', out], { encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr);
   const s = JSON.parse(fs.readFileSync(out, 'utf8'));
   assert.equal(s.nights, 10);

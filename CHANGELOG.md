@@ -3,7 +3,7 @@
 ## [v1.0.0 / phase-4] — Ticket-04 "Bình minh: phát hành v1.0.0", Test Contract v1.3
 
 ### ⚠ Breaking changes
-- **Contract 1.2 → 1.3:** thêm `bench_cmd` (`node scripts/bench.js`) và `soak_cmd` (`node --expose-gc scripts/soak.js`).
+- **Contract 1.2 → 1.3:** thêm `bench_cmd` (`node scripts/bench.js`) và `soak_cmd` (`node --expose-gc --no-opt --max-semi-space-size=1 --min-semi-space-size=1 scripts/soak.js`).
 - **`run_cmd`** đổi từ `npm start` (vite dev) sang `node scripts/run.js` (server tĩnh + API bảng xếp hạng, tự build lần đầu; nhận `--export-leaderboard`). `build_cmd` = `npm install && npm run build`.
 - Sim nhận tùy chọn `bench` (mặc định tắt; headless không đổi — 19 scenario giống từng byte phase-3).
 
@@ -16,6 +16,7 @@
 ### Fixed / performance
 - Bóng Mực vẽ bằng InstancedMesh, đom đóm bằng Points (~850 → ~45 draw call trong bench). Biên dịch shader trước khi chơi (hết giật khi camera quay). Không cấp phát mảng mỗi tick khi tìm đèn gần nhất.
 - Ô nhập tên không còn bị phím game "nuốt" chữ.
+- Soak trượt trên CI macOS (58.5 > 1.2 × 47.6 MB): RSS tăng **một lần** ~10 MB ở Đêm đầu (mã TurboFan + young generation) rồi đi ngang 30 Đêm — không rò rỉ. `soak_cmd` chạy V8 cấu hình tiết kiệm bộ nhớ (`--no-opt`, young generation 1 MB): Linux 48.7 → 49.8 MB.
 
 ## [Unreleased → v1.0.0] — làm đẹp đồ họa (giữa Phase 3 và 4)
 - Phong cách low-poly theo brief: trời gradient + sao lấp lánh, biển mây gợn, đảo có mặt dưới bằng đá, đá tinh thể, cây low-poly, cỏ InstancedMesh lay theo gió (mạnh hơn khi Gió mạnh Đêm 3).

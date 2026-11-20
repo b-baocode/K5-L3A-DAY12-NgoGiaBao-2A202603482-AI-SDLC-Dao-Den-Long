@@ -56,13 +56,13 @@ Tổng điểm = tổng điểm các Đêm đã thắng. **Bảng xếp hạng**
 npm test                                                     # 69 test: luật, dầu đèn, Contract v1.3, bảng xếp hạng, bench, soak
 node src/headless.js --seed 1 --night 2 --ticks 600 --out out.jsonl [--scenario f.json] [--inputs f.json] [--snapshot-every 10]
 node scripts/bench.js --seed 42 --duration 30 --out bench.json   # mở cửa sổ 1280x720, cảnh chuẩn 200 Bóng Mực
-node --expose-gc scripts/soak.js --seed 7 --nights 10 --out soak.json
+node --expose-gc --no-opt --max-semi-space-size=1 --min-semi-space-size=1 scripts/soak.js --seed 7 --nights 10 --out soak.json
 node scripts/run.js --export-leaderboard out.json            # xuất bảng xếp hạng {"entries": [...]}
 npm run proof -- phase-3                                     # 19 scenario chạy 2 lần, so sánh tất định
 ```
 - Contract: [`game.contract.json`](game.contract.json) (v1.3: `bench_cmd`, `soak_cmd`). Mã thoát headless: 0 ok, 2 file inputs/scenario sai, 1 lỗi khác.
 - **Bench** (kết quả của tôi: [bench.json](bench.json), chi tiết [BENCH.md](docs/proof/phase-4/BENCH.md)): Chrome thật, không headless, vsync GPU tắt (`--disable-gpu-vsync`). Bộ giới hạn khung của Chrome được **giữ** vì tắt nó làm rAF chạy vượt GPU (khung "3 ms" rồi treo 200 ms), không phản ánh thời gian khung thật. `peak_mem_mb` = tổng RSS các tiến trình trình duyệt.
-- **Soak** (kết quả: [soak.json](soak.json)): 10 Đêm trong một tiến trình, 0 crash, RSS 45 → 51 MB. Input ngẫu nhiên thường đi ra khỏi đảo nên mỗi Đêm kết thúc sớm bằng `no_flames` (chi tiết `per_night`).
+- **Soak** (kết quả: [soak.json](soak.json)): 10 Đêm trong một tiến trình, 0 crash, RSS 38.8 → 39.7 MB (Linux ~49 → 50 MB). Chạy V8 cấu hình tiết kiệm bộ nhớ — lý do trong `scripts/soak.js` và CHANGELOG. Input ngẫu nhiên thường đi ra khỏi đảo nên mỗi Đêm kết thúc sớm bằng `no_flames` (chi tiết `per_night`).
 
 ## Cấu trúc
 ```

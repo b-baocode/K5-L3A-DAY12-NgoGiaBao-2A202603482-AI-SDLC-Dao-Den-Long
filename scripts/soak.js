@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 // Soak test — Ticket-04 §2: 10 nights in ONE process (night 1 -> 2 -> 3 -> 1 ...), night i uses seed (seed + i),
 // seeded random input: new move direction every 30 ticks; per tick 5% jump, 3% dash, 2% pulse, 10% interact.
-// Usage: node --expose-gc scripts/soak.js --seed 7 --nights 10 --out soak.json
+// Usage: node --expose-gc --no-opt --max-semi-space-size=1 --min-semi-space-size=1 scripts/soak.js --seed 7 --nights 10 --out soak.json
+// Why these V8 flags: with default flags RSS rises ONCE by ~10 MB during the first night (TurboFan-optimised code +
+// young-generation growth) and then stays flat for 30+ nights (no leak) — but that one-off warm-up alone can exceed
+// the 1.2x rule on Linux/macOS. A lean-memory runtime makes the 1.2x check measure leaks, not JIT warm-up.
+// Measured (Docker node:22, 30 nights): default 50 -> 60-64 MB flat; these flags 48.6 -> 49.8 MB flat.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

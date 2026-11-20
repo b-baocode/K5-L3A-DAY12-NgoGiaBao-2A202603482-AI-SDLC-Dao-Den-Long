@@ -9,7 +9,7 @@
 - Proof (regenerates docs/proof/<phase>/): `npm run proof -- phase-N`
 - Play: `node scripts/run.js` (serves dist/, leaderboard API -> data/leaderboard.json; `--export-leaderboard f`)
 - Bench (real browser window, needs a display): `node scripts/bench.js --seed 42 --duration 30 --out bench.json`
-- Soak: `node --expose-gc scripts/soak.js --seed 7 --nights 10 --out soak.json`
+- Soak: `node --expose-gc --no-opt --max-semi-space-size=1 --min-semi-space-size=1 scripts/soak.js --seed 7 --nights 10 --out soak.json`
 
 ## Layout
 - `src/sim/` — ALL game rules. Pure JS, no DOM, no `Math.random`, no wall clock. Deterministic via `rng.js`.

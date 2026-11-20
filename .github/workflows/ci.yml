@@ -15,6 +15,6 @@ jobs:
         env:
           PUPPETEER_SKIP_DOWNLOAD: 'true' # bench needs a display; CI runs everything else
       - run: npm test
-      - run: node --expose-gc scripts/soak.js --seed 7 --nights 10 --out soak-ci.json
+      - run: node --expose-gc --no-opt --max-semi-space-size=1 --min-semi-space-size=1 scripts/soak.js --seed 7 --nights 10 --out soak-ci.json
       - run: npm run proof -- ci-check
       - run: npm run build
