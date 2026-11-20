@@ -1,0 +1,424 @@
+{
+ "frames": [
+  {
+   "tick": 0,
+   "move": [
+    0,
+    1
+   ],
+   "cam_yaw_deg": 0
+  },
+  {
+   "tick": 1,
+   "pulse": true
+  },
+  {
+   "tick": 2,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 3,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 4,
+   "jump": false
+  },
+  {
+   "tick": 100,
+   "move": [
+    1,
+    0
+   ],
+   "cam_yaw_deg": 37
+  },
+  {
+   "tick": 200,
+   "move": [
+    0,
+    -1
+   ],
+   "cam_yaw_deg": 74
+  },
+  {
+   "tick": 300,
+   "move": [
+    -1,
+    0
+   ],
+   "cam_yaw_deg": 111
+  },
+  {
+   "tick": 301,
+   "pulse": true
+  },
+  {
+   "tick": 302,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 303,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 304,
+   "jump": false
+  },
+  {
+   "tick": 400,
+   "move": [
+    0.7,
+    0.7
+   ],
+   "cam_yaw_deg": 148
+  },
+  {
+   "tick": 500,
+   "move": [
+    -1,
+    1
+   ],
+   "cam_yaw_deg": 185
+  },
+  {
+   "tick": 600,
+   "move": [
+    0,
+    1
+   ],
+   "cam_yaw_deg": 222
+  },
+  {
+   "tick": 601,
+   "pulse": true
+  },
+  {
+   "tick": 602,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 603,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 604,
+   "jump": false
+  },
+  {
+   "tick": 700,
+   "move": [
+    1,
+    0
+   ],
+   "cam_yaw_deg": 259
+  },
+  {
+   "tick": 800,
+   "move": [
+    0,
+    -1
+   ],
+   "cam_yaw_deg": 296
+  },
+  {
+   "tick": 900,
+   "move": [
+    -1,
+    0
+   ],
+   "cam_yaw_deg": 333
+  },
+  {
+   "tick": 901,
+   "pulse": true
+  },
+  {
+   "tick": 902,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 903,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 904,
+   "jump": false
+  },
+  {
+   "tick": 1000,
+   "move": [
+    0.7,
+    0.7
+   ],
+   "cam_yaw_deg": 10
+  },
+  {
+   "tick": 1100,
+   "move": [
+    -1,
+    1
+   ],
+   "cam_yaw_deg": 47
+  },
+  {
+   "tick": 1200,
+   "move": [
+    0,
+    1
+   ],
+   "cam_yaw_deg": 84
+  },
+  {
+   "tick": 1201,
+   "pulse": true
+  },
+  {
+   "tick": 1202,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 1203,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 1204,
+   "jump": false
+  },
+  {
+   "tick": 1300,
+   "move": [
+    1,
+    0
+   ],
+   "cam_yaw_deg": 121
+  },
+  {
+   "tick": 1400,
+   "move": [
+    0,
+    -1
+   ],
+   "cam_yaw_deg": 158
+  },
+  {
+   "tick": 1500,
+   "move": [
+    -1,
+    0
+   ],
+   "cam_yaw_deg": 195
+  },
+  {
+   "tick": 1501,
+   "pulse": true
+  },
+  {
+   "tick": 1502,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 1503,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 1504,
+   "jump": false
+  },
+  {
+   "tick": 1600,
+   "move": [
+    0.7,
+    0.7
+   ],
+   "cam_yaw_deg": 232
+  },
+  {
+   "tick": 1700,
+   "move": [
+    -1,
+    1
+   ],
+   "cam_yaw_deg": 269
+  },
+  {
+   "tick": 1800,
+   "move": [
+    0,
+    1
+   ],
+   "cam_yaw_deg": 306
+  },
+  {
+   "tick": 1801,
+   "pulse": true
+  },
+  {
+   "tick": 1802,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 1803,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 1804,
+   "jump": false
+  },
+  {
+   "tick": 1900,
+   "move": [
+    1,
+    0
+   ],
+   "cam_yaw_deg": 343
+  },
+  {
+   "tick": 2000,
+   "move": [
+    0,
+    -1
+   ],
+   "cam_yaw_deg": 20
+  },
+  {
+   "tick": 2100,
+   "move": [
+    -1,
+    0
+   ],
+   "cam_yaw_deg": 57
+  },
+  {
+   "tick": 2101,
+   "pulse": true
+  },
+  {
+   "tick": 2102,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 2103,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 2104,
+   "jump": false
+  },
+  {
+   "tick": 2200,
+   "move": [
+    0.7,
+    0.7
+   ],
+   "cam_yaw_deg": 94
+  },
+  {
+   "tick": 2300,
+   "move": [
+    -1,
+    1
+   ],
+   "cam_yaw_deg": 131
+  },
+  {
+   "tick": 2400,
+   "move": [
+    0,
+    1
+   ],
+   "cam_yaw_deg": 168
+  },
+  {
+   "tick": 2401,
+   "pulse": true
+  },
+  {
+   "tick": 2402,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 2403,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 2404,
+   "jump": false
+  },
+  {
+   "tick": 2500,
+   "move": [
+    1,
+    0
+   ],
+   "cam_yaw_deg": 205
+  },
+  {
+   "tick": 2600,
+   "move": [
+    0,
+    -1
+   ],
+   "cam_yaw_deg": 242
+  },
+  {
+   "tick": 2700,
+   "move": [
+    -1,
+    0
+   ],
+   "cam_yaw_deg": 279
+  },
+  {
+   "tick": 2701,
+   "pulse": true
+  },
+  {
+   "tick": 2702,
+   "pulse": false,
+   "interact": true
+  },
+  {
+   "tick": 2703,
+   "interact": false,
+   "jump": true
+  },
+  {
+   "tick": 2704,
+   "jump": false
+  },
+  {
+   "tick": 2800,
+   "move": [
+    0.7,
+    0.7
+   ],
+   "cam_yaw_deg": 316
+  },
+  {
+   "tick": 2900,
+   "move": [
+    -1,
+    1
+   ],
+   "cam_yaw_deg": 353
+  }
+ ]
+}
