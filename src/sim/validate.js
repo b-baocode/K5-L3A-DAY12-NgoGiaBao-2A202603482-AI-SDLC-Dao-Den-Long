@@ -1,7 +1,7 @@
 // Validation of --inputs and --scenario files. Any problem -> InputError (headless exits 2).
 export class InputError extends Error {}
 
-export const SHADE_STATES = ['spawning', 'wander', 'chase', 'recoil', 'stunned'];
+export const SHADE_STATES = ['spawning', 'wander', 'chase', 'recoil', 'stunned', 'drain'];
 export const DRIFTER_STATES = ['idle', 'chase', 'flee', 'removed'];
 
 const isNum = (x) => typeof x === 'number' && Number.isFinite(x);
@@ -37,7 +37,7 @@ export function validateScenario(sc, lanternCount = 5) {
     if (sc.player.pos !== undefined && !isVec3(sc.player.pos)) fail('scenario.player.pos: expected [x,y,z]');
     if (sc.player.carried !== undefined && !isNonNegInt(sc.player.carried)) fail('scenario.player.carried: integer >= 0');
     if (sc.player.flames !== undefined && !isNonNegInt(sc.player.flames)) fail('scenario.player.flames: integer >= 0');
-    for (const k of ['invuln_ticks', 'dash_cd_ticks', 'pulse_cd_ticks', 'charm_ticks'])
+    for (const k of ['invuln_ticks', 'dash_cd_ticks', 'pulse_cd_ticks', 'charm_ticks', 'successful_lights'])
       if (sc.player[k] !== undefined && !isNonNegInt(sc.player[k])) fail(`scenario.player.${k}: integer >= 0`);
   }
   for (const k of ['random_motes', 'random_shades', 'random_drifters', 'wind_enabled'])
@@ -60,6 +60,7 @@ export function validateScenario(sc, lanternCount = 5) {
       }
       if (s.state !== undefined && !SHADE_STATES.includes(s.state)) fail(`scenario.shades[${i}].state: one of ${SHADE_STATES.join(',')}`);
       if (s.state_ticks_left !== undefined && !isNonNegInt(s.state_ticks_left)) fail(`scenario.shades[${i}].state_ticks_left: integer >= 0`);
+      if (s.target_lantern_id !== undefined && typeof s.target_lantern_id !== 'string') fail(`scenario.shades[${i}].target_lantern_id: string`);
     });
   }
   if (sc.drifters !== undefined) {
@@ -90,6 +91,8 @@ export function validateScenario(sc, lanternCount = 5) {
       if (l.pos !== undefined && !isVec3(l.pos)) fail(`scenario.lanterns[${i}].pos: expected [x,y,z]`);
       if (l.lit !== undefined && typeof l.lit !== 'boolean') fail(`scenario.lanterns[${i}].lit: must be boolean`);
       if (l.deposited !== undefined && !isNonNegInt(l.deposited)) fail(`scenario.lanterns[${i}].deposited: integer >= 0`);
+      if (l.fuel !== undefined && !(isNum(l.fuel) && l.fuel >= 0 && l.fuel <= 100)) fail(`scenario.lanterns[${i}].fuel: number 0..100`);
+      if (l.ever_lit !== undefined && typeof l.ever_lit !== 'boolean') fail(`scenario.lanterns[${i}].ever_lit: boolean`);
     });
   }
   if (sc.time_left_s !== undefined && !(isNum(sc.time_left_s) && sc.time_left_s >= 0))
