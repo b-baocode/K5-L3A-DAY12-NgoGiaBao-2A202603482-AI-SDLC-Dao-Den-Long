@@ -23,33 +23,34 @@ npm start          # mở http://localhost:5173
 | E | Nạp đom đóm vào đèn chưa sáng gần nhất (trong 2 m) |
 | F hoặc chuột phải | Tỏa Sáng: tốn 3 đom đóm, choáng 2 s và đẩy lùi Bóng Mực trong 5 m |
 
-## Luật và cách tính điểm (số chuẩn Ticket-02)
-- Đom đóm tự nhặt khi đi qua (≤ 1 m), mang tối đa **10**. Mỗi đèn cần **10** (nạp nhiều lần được).
-- Bóng Mực phát hiện trong 12 m, bỏ đuổi ngoài 18 m. Bị chạm: −1 Ngọn Lửa (có 3), rơi một nửa đom đóm (nhặt lại trong 8 s), bất tử 1.5 s. Bóng Mực không vào được vùng 6 m quanh đèn **đã sáng**.
-- Rơi khỏi đảo: −1 Ngọn Lửa, mất hết đom đóm, hồi sinh ở điểm xuất phát.
-- **Gió Lạc** (Đêm 2, 3) đuổi khi bạn mang ≥ 5 đom đóm, cướp 3 rồi bỏ chạy; Tỏa Sáng vào nó để lấy lại. **Bùa Gió** (lá bùa đỏ) cho chạy nhanh và Lướt không hồi chiêu trong 10 s.
-- Thắng: thắp hết đèn của Đêm. Thua: hết Ngọn Lửa, hoặc hết giờ (300 / 330 / 360 s).
+## Luật và cách tính điểm (Ticket-03 "Đèn cạn dầu")
+- **Mục tiêu:** sống tới bình minh và giữ đủ đèn sáng: Đêm 1 cần 3/5, Đêm 2 cần 4/6, Đêm 3 cần 5/7. Đêm dài 240 / 270 / 300 s. Thắp hết đèn **không** kết thúc Đêm.
+- **Đèn có dầu:** thắp xong dầu 100, hao 1/giây. Bấm E ở đèn đang sáng để **châm dầu** (+10 mỗi đom đóm). Hết dầu đèn tắt; thắp lại chỉ cần 5 đom đóm.
+- **Bóng Mực hút dầu:** đèn dưới 30 dầu mất vùng an toàn và nhấp nháy; Bóng Mực lang thang sẽ tới hút 5 dầu/giây. Tỏa Sáng vào nó (+15) hoặc châm dầu để đuổi đi.
+- Đom đóm tự nhặt khi đi qua (≤ 1 m). **Sức chứa** 10, +2 mỗi lần thắp thành công (tối đa 20).
+- Bóng Mực phát hiện trong 12 m, bỏ đuổi ngoài 18 m; bị chạm: −1 Ngọn Lửa (có 3), rơi một nửa đom đóm, bất tử 1.5 s. Rơi khỏi đảo: −1 Ngọn Lửa, mất hết đom đóm.
+- **Gió Lạc** (Đêm 2, 3) cướp 3 đom đóm khi bạn mang ≥ 5; Tỏa Sáng để lấy lại. **Bùa Gió** cho chạy nhanh và Lướt không hồi chiêu trong 10 s.
 
 | Sự kiện | Điểm |
 |---|---|
-| Mỗi đom đóm **nạp** vào đèn | +10 |
-| Thắp 1 đèn | +100 |
-| Mỗi Bóng Mực trúng Tỏa Sáng | +5 |
-| Khi thắng: mỗi giây còn lại | +2 |
-| Khi thắng: mỗi Ngọn Lửa còn lại | +50 |
+| Mỗi đom đóm nạp vào đèn (thắp, thắp lại, châm dầu) | +5 |
+| Thắp lần đầu / thắp lại | +100 / +40 |
+| Bóng Mực trúng Tỏa Sáng (đang hút dầu) | +5 (+15) |
+| Bình minh (khi thắng): mỗi đèn đang sáng | +50 + phần nguyên dầu còn lại |
+| Bình minh (khi thắng): mỗi Ngọn Lửa | +50 |
 
-Tổng điểm game = tổng điểm các Đêm đã thắng (hiện ở màn Bình Minh).
+Tổng điểm game = tổng điểm các Đêm đã thắng (màn Bình Minh). Cài đặt có **Bảng màu dễ phân biệt** cho người mù màu.
 
 ## Test, headless và bằng chứng
 ```bash
-npm test                                   # 51 test: luật, Test Contract v1.1, phần sáng tạo
-npm run proof -- phase-2                   # chạy 14 scenario 2 lần, ghi docs/proof/phase-2/
+npm test                                   # 63 test: luật, dầu đèn, Test Contract v1.2, phần sáng tạo
+npm run proof -- phase-3                   # chạy 19 scenario 2 lần, ghi docs/proof/phase-3/
 node src/headless.js --seed 1 --night 2 --ticks 600 --out out.jsonl \
   [--scenario scenarios/win.scenario.json] [--inputs scenarios/win.inputs.json] [--snapshot-every 10]
 ```
-- Test Contract v1.1: [`game.contract.json`](game.contract.json), `--night 1|2|3`. Mã thoát: 0 ok, 2 file inputs/scenario sai định dạng, 1 lỗi khác.
+- Test Contract v1.2: [`game.contract.json`](game.contract.json), `--night 1|2|3`. Thay đổi phá vỡ tương thích: [CHANGELOG.md](CHANGELOG.md). Quyết định thiết kế: [ADR 0001](docs/adr/0001-lantern-fuel-and-dawn-win.md). Mã thoát: 0 ok, 2 file inputs/scenario sai định dạng, 1 lỗi khác.
 - `tuning` trong contract là **số game thật sự dùng** — game đọc trực tiếp từ file này. Từ Phase 2 tuning là **số chuẩn** của Ticket-02 (`fall_enabled: true`, có Lướt).
-- Giả định, tiêu chí nghiệm thu, bảng yêu cầu → bằng chứng: [Phase 1](docs/notes/phase-1.md) · [Phase 2](docs/notes/phase-2.md). Proof: [phase-1](docs/proof/phase-1/SUMMARY.md) · [phase-2](docs/proof/phase-2/SUMMARY.md).
+- Giả định, tiêu chí nghiệm thu, bảng yêu cầu → bằng chứng: [Phase 1](docs/notes/phase-1.md) · [Phase 2](docs/notes/phase-2.md) · [Phase 3](docs/notes/phase-3.md). Proof: [phase-1](docs/proof/phase-1/SUMMARY.md) · [phase-2](docs/proof/phase-2/SUMMARY.md) · [phase-3](docs/proof/phase-3/SUMMARY.md).
 
 ## Cấu trúc
 ```

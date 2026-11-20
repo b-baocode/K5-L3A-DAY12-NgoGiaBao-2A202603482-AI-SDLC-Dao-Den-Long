@@ -24,3 +24,14 @@ Cách tiết kiệm: đọc tài liệu một lần rồi tóm tắt; tuning m�
 | Lỗi AI | Test tự viết sai (không nhả nút, lệch 1 tick); một test không bắt được lỗi tâm Tỏa Sáng; scenario cũ không còn hợp lệ; cảnh quá tối, FPS thấp do nhiều point light | Sửa test, ghi quy tắc vào AGENTS.md; thêm case biên; chỉnh scenario; tắt đèn điểm của đèn chưa nạp |
 
 Token ước tính Phase 2: _(điền từ `/cost`)_. Cách tiết kiệm: viết lại `step()` một lần theo thứ tự ticket thay vì vá dần; chạy test từng file khi sửa; mỗi tính năng một scenario nhỏ.
+
+## Phase 3
+| Bước | Việc AI làm | Tôi kiểm tra / quyết định |
+|---|---|---|
+| Đọc ticket | Tách luật bị [THAY THẾ], ưu tiên phần chấm tự động; brief đồ họa để Phase 4 | Duyệt thứ tự ưu tiên (30 phút) |
+| Thiết kế | Đèn thành vòng trạng thái có dầu (đơn vị nguyên 1/60), `hasZone`/`lanternNeed`/`capacity`/`winNeed` là hàm suy ra; ADR 0001 | Duyệt giả định A41–A45 |
+| Build | Sim v1.2, validate, web: thanh dầu, đèn xẹp/rách, hạt hút dầu, HUD sức chứa, chế độ mù màu | Đọc diff |
+| Kiểm chứng | 63 test (12 test dầu mới), 19 scenario proof ×2, ảnh thường + mù màu | Xem ảnh |
+| Lỗi AI | 3 kỳ vọng sai trong test/proof (dầu đã hao trước khi châm, khoảng cách 5.9 < 6, đèn vừa thắp vẫn nhận châm); FPS giảm do hạt tạo material mới | Sửa kỳ vọng theo câu chữ ticket; ghi nợ kỹ thuật FPS cho Phase 4 |
+
+Token ước tính Phase 3: _(điền từ `/cost`)_. Cách tiết kiệm: sửa sim bằng một script thay thế có kiểm tra (assert mỗi đoạn) thay vì nhiều lần edit; một file test mới cho luật mới thay vì vá rải rác.
