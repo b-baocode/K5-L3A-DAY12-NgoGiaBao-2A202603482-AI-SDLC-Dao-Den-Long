@@ -17,8 +17,8 @@ const SC = path.join(ROOT, 'scenarios');
 const snaps = (L) => L.filter((l) => l.type === 'snapshot');
 const runs = [
   // --- phase 1 behaviour (regression, standard numbers) ---
-  { name: 'pickup_deposit', night: 1, desc: '10 motes picked, L1 lit by one deposit (+100 +10x10)', seed: 1, ticks: 400, expect: (L) => ev(L, 'mote_picked').length === 10 && ev(L, 'lantern_lit')[0]?.data.lantern_id === 'L1' && L.at(-1).score === 200 },
-  { name: 'win', night: 1, desc: '5 deposits -> won / all_lit', seed: 1, ticks: 600, expect: (L) => L.at(-1).state === 'won' && ev(L, 'game_over')[0].data.reason === 'all_lit' },
+  { name: 'pickup_deposit', night: 1, desc: '10 motes picked, L1 lit by one deposit (v1.2: +100 +5x10)', seed: 1, ticks: 400, expect: (L) => ev(L, 'mote_picked').length === 10 && ev(L, 'lantern_lit')[0]?.data.lantern_id === 'L1' && L.at(-1).score === 150 },
+  { name: 'win', night: 1, desc: 'v1.2: nearest receivable lantern wins: after lighting, the lit-not-full lantern takes refuels; no early win', seed: 1, ticks: 600, expect: (L) => ev(L, 'lantern_lit').length === 1 && ev(L, 'refuel').length === 4 && L.at(-1).state === 'playing' && !ev(L, 'game_over').length },
   { name: 'shade_hit_pulse', night: 1, desc: 'shade hits player (recoil), pulse stuns a shade', seed: 1, ticks: 1200, expect: (L) => ev(L, 'player_hit').length >= 1 && ev(L, 'pulse').some((e) => e.data.stunned_ids.length > 0) && snaps(L).some((s) => s.shades.some((x) => x.state === 'recoil')) },
   { name: 'lit_lanterns', night: 1, desc: 'player at lit L1: no hit, shades stay > 6 m from lit lanterns', seed: 1, ticks: 1200, expect: (L) => ev(L, 'player_hit').length === 0 && snaps(L).every((s) => s.shades.every((sh) => s.lanterns.filter((x) => x.lit).every((lt) => Math.hypot(sh.pos[0] - lt.pos[0], sh.pos[2] - lt.pos[2]) > 6))) },
   { name: 'wander', night: 1, desc: 'long random run with inputs ends with an end line', seed: 2026, ticks: 18000, expect: (L) => L.at(-1).type === 'end' },
@@ -31,6 +31,12 @@ const runs = [
   { name: 'drifter', night: 2, desc: 'Gió Lạc steals 3, pulse makes it drop them', seed: 1, ticks: 400, expect: (L) => ev(L, 'drifter_steal')[0]?.data.amount === 3 && ev(L, 'drifter_drop')[0]?.data.amount === 3 },
   { name: 'charm', night: 2, desc: 'Bùa Gió picked: 600 ticks, dash without cooldown', seed: 1, ticks: 200, expect: (L) => ev(L, 'charm_picked')[0]?.data.charm_ticks === 600 && ev(L, 'dash').length === 2 },
   { name: 'tiers_wind', night: 3, desc: 'night 3: walk up the 30° ramp to tier 1 (Y=3); wind gust at 30 s', seed: 3, ticks: 1900, expect: (L) => snaps(L).find((s) => s.tick === 100).player.pos[1] === 3 && snaps(L).find((s) => s.tick === 1800).wind.active === true },
+  // --- phase 3 (Ticket-03, contract v1.2) ---
+  { name: 'relight', night: 1, desc: 'fuel 2 -> lantern_out at tick 120, relit with 5 motes (+40, relight: true)', seed: 1, ticks: 300, expect: (L) => ev(L, 'lantern_out')[0]?.tick === 120 && ev(L, 'lantern_lit')[0]?.data.relight === true && L.at(-1).score === 25 + 40 },
+  { name: 'refuel', night: 1, desc: 'refuel at tick 11 (fuel 49.8): ceil(50.2/10) = 6 motes -> fuel 100, +30', seed: 1, ticks: 60, expect: (L) => ev(L, 'refuel')[0]?.data.amount === 6 && ev(L, 'refuel')[0].data.fuel === 100 && L.at(-1).score === 30 },
+  { name: 'drain', night: 1, desc: 'wander shade drains weak L1 (fuel_drain every 60), lantern goes out', seed: 1, ticks: 600, expect: (L) => ev(L, 'fuel_drain').length >= 2 && ev(L, 'lantern_out').length === 1 && snaps(L).some((s) => s.shades.some((x) => x.state === 'drain')) },
+  { name: 'dawn_win', night: 1, desc: 'dawn with 3/5 lit and 2 flames -> won/dawn_survived, 3x50 + fuel + 2x50', seed: 1, ticks: 400, expect: (L) => ev(L, 'game_over')[0]?.data.reason === 'dawn_survived' && L.at(-1).score === 150 + 95 + 55 + 45 + 100 },
+  { name: 'dawn_lose', night: 1, desc: 'a lantern runs out before dawn: 2/5 lit -> lost/dawn', seed: 1, ticks: 400, expect: (L) => ev(L, 'lantern_out').length === 1 && ev(L, 'game_over')[0]?.data.reason === 'dawn' },
   { name: 'night3_full', night: 3, desc: 'full night 3 with inputs: completes, deterministic', seed: 5, ticks: 21600, inputsFrom: 'wander', expect: (L) => L.at(-1).type === 'end' },
 ];
 const ev = (L, n) => L.filter((l) => l.name === n);

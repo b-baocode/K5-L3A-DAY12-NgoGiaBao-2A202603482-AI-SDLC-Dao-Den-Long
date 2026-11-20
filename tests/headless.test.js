@@ -8,12 +8,13 @@ import { ROOT, CONTRACT, headless, readJsonl, tmpDir } from './helpers.js';
 const SC = path.join(ROOT, 'scenarios');
 
 test('contract file: required fields present', () => {
-  assert.equal(CONTRACT.contract_version, '1.1');
+  assert.equal(CONTRACT.contract_version, '1.2');
   for (const k of ['team', 'build_cmd', 'run_cmd', 'headless_cmd']) assert.equal(typeof CONTRACT[k], 'string');
   const keys = ['player_speed', 'carry_capacity', 'lantern_cost', 'lantern_count_night1', 'pickup_radius',
     'interact_radius', 'pulse_cost', 'pulse_radius', 'night1_duration_s', 'flames', 'invuln_s', 'hit_drop_ratio',
     'pulse_stun_s', 'pulse_push_m', 'pulse_cooldown_s', 'safe_radius', 'shade_speed', 'shade_hit_radius', 'fall_enabled',
-    'dash_speed', 'dash_duration_s', 'dash_cooldown_s', 'night2_duration_s', 'night3_duration_s'];
+    'dash_speed', 'dash_duration_s', 'dash_cooldown_s', 'night2_duration_s', 'night3_duration_s',
+    'fuel_max', 'fuel_decay_per_s', 'fuel_per_mote', 'relight_cost', 'win_ratio', 'drain_per_s', 'low_fuel_threshold', 'capacity_max'];
   for (const k of keys) assert.ok(k in CONTRACT.tuning, k);
   for (const k of ['per_mote', 'per_lantern', 'per_stun', 'per_second_left', 'per_flame_left'])
     assert.equal(typeof CONTRACT.tuning.score[k], 'number', k);
@@ -30,7 +31,8 @@ test('output format: snapshot at tick 0 and every N, end line last, exit 0', () 
   const s0 = snaps[0];
   for (const k of ['type', 'tick', 'sim_tick', 'night', 'state', 'time_left_s', 'score', 'wind', 'player', 'lanterns', 'shades', 'motes_active', 'motes', 'drifters', 'charms'])
     assert.ok(k in s0, k);
-  for (const k of ['pos', 'vel', 'grounded', 'invuln', 'flames', 'carried', 'dash_cd_s', 'pulse_cd_s', 'charm_s']) assert.ok(k in s0.player, k);
+  for (const k of ['pos', 'vel', 'grounded', 'invuln', 'flames', 'carried', 'capacity', 'dash_cd_s', 'pulse_cd_s', 'charm_s']) assert.ok(k in s0.player, k);
+  for (const l of s0.lanterns) assert.deepEqual(Object.keys(l), ['id', 'pos', 'lit', 'deposited', 'fuel', 'ever_lit', 'relit_count']);
   assert.deepEqual(Object.keys(s0.wind), ['active', 'dir_deg']);
   for (const m of s0.motes) assert.deepEqual(Object.keys(m), ['id', 'pos', 'kind', 'ttl_s']);
   assert.equal(s0.time_left_s, CONTRACT.tuning.night1_duration_s);
@@ -127,7 +129,7 @@ test('--night 1/2/3: night field, lantern count, night_start; other values -> us
     const L = readJsonl(out);
     assert.equal(L[0].night, n);
     assert.equal(L[0].lanterns.length, [5, 6, 7][n - 1]);
-    assert.equal(L[0].time_left_s, [300, 330, 360][n - 1]);
+    assert.equal(L[0].time_left_s, [240, 270, 300][n - 1]); // Ticket-03 durations
     assert.deepEqual(L.find((l) => l.name === 'night_start').data, { night: n });
     assert.equal(L[0].charms.length, [0, 1, 2][n - 1]);
   }

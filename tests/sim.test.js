@@ -7,15 +7,17 @@ import { T, quietGame, runSteps, press } from './helpers.js';
 
 const near = (a, b, eps = 1e-9) => assert.ok(Math.abs(a - b) <= eps, `${a} != ${b}`);
 
-test('tuning matches Ticket-02 standard numbers', () => {
+// Ticket-03 [THAY THẾ]: night durations 240/270/300 and the whole score formula changed.
+test('tuning matches Ticket-02 standard numbers (+ Ticket-03 overrides)', () => {
   const want = {
     player_speed: 6, carry_capacity: 10, lantern_cost: 10, lantern_count_night1: 5, pickup_radius: 1, interact_radius: 2,
-    pulse_cost: 3, pulse_radius: 5, night1_duration_s: 300, night2_duration_s: 330, night3_duration_s: 360, flames: 3,
+    pulse_cost: 3, pulse_radius: 5, night1_duration_s: 240, night2_duration_s: 270, night3_duration_s: 300, flames: 3,
     invuln_s: 1.5, hit_drop_ratio: 0.5, pulse_stun_s: 2, pulse_push_m: 4, pulse_cooldown_s: 3, safe_radius: 6,
+    fuel_max: 100, fuel_decay_per_s: 1, fuel_per_mote: 10, relight_cost: 5, win_ratio: 0.6, drain_per_s: 5, low_fuel_threshold: 30, capacity_max: 20,
     shade_speed: 4, shade_hit_radius: 1, fall_enabled: true, dash_speed: 14, dash_duration_s: 0.2, dash_cooldown_s: 1.5,
   };
   for (const [k, v] of Object.entries(want)) assert.equal(T[k], v, k);
-  assert.deepEqual(T.score, { per_mote: 10, per_lantern: 100, per_stun: 5, per_second_left: 2, per_flame_left: 50 });
+  assert.deepEqual(T.score, { per_mote: 5, per_lantern: 100, per_relight: 40, per_stun: 5, per_stun_drain: 15, per_lit_lantern_dawn: 50, per_second_left: 0, per_flame_left: 50 });
 });
 
 test('maps: standard lanterns, mote and shade points per night', () => {
@@ -105,18 +107,19 @@ test('pickup: XZ <= 1 and height difference <= 1.5, capacity 10, no score for pi
   assert.equal(g3.player.carried, 10);
 });
 
-test('lantern: 10 to light, partial deposits remembered, +10 per mote deposited, +100 lit', () => {
+// Ticket-03 [THAY THẾ] score: +5 per mote deposited (was +10).
+test('lantern: 10 to light, partial deposits remembered, +5 per mote deposited, +100 lit', () => {
   const g = quietGame({ player: { carried: 4 }, lanterns: [{ id: 'L1', pos: [0, 0, 2] }] });
   let ev = press(g, 'interact');
   assert.deepEqual(ev[0].data, { lantern_id: 'L1', amount: 4, deposited: 4 });
-  assert.equal(g.score, 40);
+  assert.equal(g.score, 20);
   g.player.carried = 10;
   runSteps(g, 1); // release the button: deposits trigger on false -> true
   ev = press(g, 'interact');
   assert.deepEqual(ev.map((e) => e.name), ['deposit', 'lantern_lit']);
   assert.equal(ev[0].data.amount, 6);
   assert.equal(g.player.carried, 4);
-  assert.equal(g.score, 100 + 100);
+  assert.equal(g.score, 50 + 100);
 });
 
 test('lantern: out of 2 m range no deposit; tie -> smaller id', () => {
@@ -126,14 +129,15 @@ test('lantern: out of 2 m range no deposit; tie -> smaller id', () => {
   assert.equal(press(g2, 'interact')[0].data.lantern_id, 'L1');
 });
 
-test('win: all lit -> won/all_lit, bonus floor(seconds) x2 + 50 x flames', () => {
+// Ticket-03 [THAY THẾ] "win as soon as all lanterns are lit": removed. Lighting every lantern no longer
+// ends the night; see tests/fuel.test.js for the dawn win rule.
+test('all lit no longer ends the night (Ticket-03)', () => {
   const lanterns = ['L1', 'L2', 'L3', 'L4'].map((id) => ({ id, lit: true }));
   lanterns.push({ id: 'L5', pos: [0, 0, 1], deposited: 9 });
   const g = quietGame({ player: { carried: 1, flames: 2 }, lanterns, time_left_s: 100 });
   const ev = press(g, 'interact');
-  assert.equal(g.state, 'won');
-  assert.deepEqual(ev.at(-1).data, { result: 'won', reason: 'all_lit' });
-  assert.equal(g.score, 10 + 100 + Math.floor(100 - 1 / 60) * 2 + 50 * 2);
+  assert.ok(ev.some((e) => e.name === 'lantern_lit'));
+  assert.equal(g.state, 'playing');
 });
 
 test('pulse: needs 3 motes, radius 5 (3D from feet+0.8), +5 per shade, stun 120, push 4 m over 15 ticks', () => {
@@ -281,16 +285,13 @@ test('fall on the last flame loses immediately (no respawn)', () => {
   assert.deepEqual(ev.at(-1).data, { result: 'lost', reason: 'no_flames' });
 });
 
-test('dawn: time over -> lost/dawn; win on the last tick still wins', () => {
+// Ticket-03 [THAY THẾ]: "win on the last tick by lighting the last lantern" no longer exists; dawn with
+// too few lit lanterns is still lost/dawn.
+test('dawn: time over with too few lit lanterns -> lost/dawn', () => {
   const g = quietGame({ time_left_s: 1 });
   const ev = runSteps(g, 100);
   assert.equal(g.simTick, 60);
   assert.deepEqual(ev.at(-1).data, { result: 'lost', reason: 'dawn' });
-  const lanterns = ['L1', 'L2', 'L3', 'L4'].map((id) => ({ id, lit: true }));
-  lanterns.push({ id: 'L5', pos: [0, 0, 1], deposited: 9 });
-  const g2 = quietGame({ player: { carried: 1 }, lanterns, time_left_s: 1 / 60 });
-  press(g2, 'interact');
-  assert.equal(g2.state, 'won');
 });
 
 test('pause: tick advances, sim_tick/time/cooldowns frozen, paused/resumed events', () => {
