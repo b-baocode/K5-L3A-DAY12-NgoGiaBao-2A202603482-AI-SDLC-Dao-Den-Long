@@ -5,37 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đảo Đèn Lồng</title>
     <style>
-      html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0716; font-family: system-ui, sans-serif; color: #ffe9c4; }
-      #hud { position: fixed; top: 12px; left: 12px; display: grid; gap: 6px; font-size: 15px; text-shadow: 0 1px 3px #000; pointer-events: none; }
-      #hud .row { display: flex; gap: 14px; }
-      #hud b { color: #ffb347; }
-      #help { position: fixed; bottom: 10px; left: 12px; font-size: 12px; opacity: .75; pointer-events: none; }
-      #overlay { position: fixed; inset: 0; display: none; place-items: center; background: rgba(10, 5, 25, .65); }
-      #overlay .card { text-align: center; padding: 28px 40px; border-radius: 14px; background: #1c1233; border: 1px solid #ffb34766; }
-      #overlay h1 { margin: 0 0 8px; color: #ffb347; }
-      #toast { position: fixed; top: 18%; left: 50%; transform: translateX(-50%); max-width: min(640px, 90vw); text-align: center; padding: 10px 18px; border-radius: 10px; background: rgba(28, 18, 51, .75); border: 1px solid #ffb34755; font-size: 16px; opacity: 0; transition: opacity .6s; pointer-events: none; }
-      #legend { position: fixed; top: 12px; right: 12px; font-size: 12px; line-height: 1.7; text-align: right; opacity: .85; pointer-events: none; text-shadow: 0 1px 3px #000; }
+      :root { --ui: #f5f1e6; --danger: #ff5a5f; --gold: #f2c14e; --panel: rgba(14, 20, 48, .82); --lamp: #ffb347; }
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #0e1430; font-family: system-ui, sans-serif; color: var(--ui); user-select: none; }
+      .hud { position: fixed; pointer-events: none; text-shadow: 0 1px 3px #000; }
+      #h-flames { top: 14px; left: 16px; font-size: 26px; letter-spacing: 4px; }
+      #h-time { top: 12px; left: 50%; transform: translateX(-50%); font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      #h-time.danger { color: var(--danger); animation: blink 1s steps(2) infinite; }
+      @keyframes blink { 50% { opacity: .25; } }
+      #h-right { top: 12px; right: 16px; text-align: right; font-size: 17px; line-height: 1.5; }
+      #h-right b { color: var(--gold); font-size: 22px; }
+      #h-motes { bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+      #h-motes i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ffe58a66; background: #ffffff10; }
+      #h-motes i.on { background: radial-gradient(#fff6c2, #ffe58a); border-color: #ffe58a; box-shadow: 0 0 8px #ffe58a; }
+      #h-cd { bottom: 16px; right: 16px; display: flex; gap: 10px; }
+      .cd { width: 54px; height: 54px; border-radius: 12px; background: var(--panel); border: 2px solid #ffffff30; position: relative; overflow: hidden; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+      .cd .fill { position: absolute; left: 0; bottom: 0; width: 100%; background: #ffb34755; }
+      .cd span { position: relative; text-align: center; line-height: 1.2; }
+      .cd.ready { border-color: var(--lamp); }
+      #h-prompt { bottom: 70px; left: 50%; transform: translateX(-50%); padding: 6px 14px; border-radius: 8px; background: var(--panel); border: 1px solid var(--lamp); font-size: 16px; display: none; }
+      #h-arrow { width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-bottom: 30px solid var(--lamp); filter: drop-shadow(0 0 6px #ffb347); display: none; }
+      #h-charm { top: 50px; left: 16px; font-size: 14px; color: #ff8a8a; }
+      #h-wind { top: 52px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #c8d7ff; }
+      #toast { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); max-width: min(640px, 90vw); text-align: center; padding: 10px 18px; border-radius: 10px; background: var(--panel); border: 1px solid #ffb34755; font-size: 16px; opacity: 0; transition: opacity .6s; pointer-events: none; }
+      #fps { position: fixed; bottom: 4px; left: 6px; font: 11px monospace; opacity: .6; display: none; }
+      .screen { position: fixed; inset: 0; display: none; place-items: center; background: rgba(8, 10, 28, .72); z-index: 10; }
+      .screen.on { display: grid; }
+      .card { min-width: 320px; max-width: min(560px, 90vw); text-align: center; padding: 28px 36px; border-radius: 16px; background: var(--panel); border: 1px solid #ffb34766; }
+      .card h1 { margin: 0 0 6px; color: var(--lamp); font-size: 32px; }
+      .card h2 { margin: 0 0 12px; color: var(--gold); font-weight: 500; font-size: 18px; }
+      .card p { line-height: 1.6; }
+      .card .quote { font-style: italic; color: #e8e2d0; }
+      .btns { display: grid; gap: 10px; margin-top: 18px; }
+      button { font: inherit; font-size: 16px; padding: 10px 18px; border-radius: 10px; border: 1px solid var(--lamp); background: #ffb34722; color: var(--ui); cursor: pointer; }
+      button:hover, button:focus-visible { background: #ffb34755; outline: none; }
+      label { display: grid; gap: 4px; text-align: left; margin: 10px 0; }
+      input[type=range] { width: 100%; accent-color: var(--lamp); }
+      #legend { position: fixed; top: 88px; right: 16px; font-size: 12px; line-height: 1.7; text-align: right; opacity: .8; pointer-events: none; text-shadow: 0 1px 3px #000; }
       #legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
-      #cool { width: 120px; height: 6px; background: #3a2a55; border-radius: 3px; overflow: hidden; }
-      #cool > div { height: 100%; background: #ffb347; }
     </style>
   </head>
   <body>
-    <div id="hud">
-      <div class="row"><span>Lửa: <b id="flames"></b></span><span>Đom đóm: <b id="carried"></b></span><span>Đèn: <b id="lit"></b></span></div>
-      <div class="row"><span>Thời gian: <b id="time"></b></span><span>Điểm: <b id="score"></b></span></div>
-      <div class="row"><span>Tỏa sáng</span><div id="cool"><div></div></div></div>
+    <!-- HUD -->
+    <div id="h-flames" class="hud"></div>
+    <div id="h-charm" class="hud"></div>
+    <div id="h-time" class="hud"></div>
+    <div id="h-wind" class="hud"></div>
+    <div id="h-right" class="hud"><div>Đèn <span id="h-lit"></span></div><div><b id="h-score"></b></div></div>
+    <div id="h-motes" class="hud"></div>
+    <div id="h-cd" class="hud">
+      <div class="cd" id="cd-dash"><div class="fill"></div><span>Lướt<br />Shift</span></div>
+      <div class="cd" id="cd-pulse"><div class="fill"></div><span>Tỏa<br />F</span></div>
+    </div>
+    <div id="h-prompt" class="hud"></div>
+    <div id="h-arrow" class="hud"></div>
+    <div id="legend">
+      Đom đóm<i style="background:#fff6c2"></i><br />Vàng Kim ×2<i style="background:#ffa800"></i><br />Ngọc Lam +1 lửa<i style="background:#5fffe0"></i><br />
+      Mực Lướt: nhanh<i style="background:#7a3cff"></i><br />Mực Khổng Lồ: với xa<i style="background:#120a1a;border:1px solid #7a3cff"></i><br />Gió Lạc: cướp đom đóm<i style="background:#8fa3b8"></i>
     </div>
     <div id="toast"></div>
-    <div id="legend">
-      Đom đóm<i style="background:#ffe066"></i><br />
-      Vàng Kim ×2<i style="background:#ffa800"></i><br />
-      Ngọc Lam +1 lửa<i style="background:#5fffe0"></i><br />
-      Mực Lướt: nhanh<i style="background:#8a2be2"></i><br />
-      Mực Khổng Lồ: với xa<i style="background:#24082f;border:1px solid #888"></i>
-    </div>
-    <div id="help">WASD di chuyển · Kéo chuột / Q C xoay camera · Space nhảy · E nạp đèn · F / chuột phải tỏa sáng · R chơi lại</div>
-    <div id="overlay"><div class="card"><h1 id="ov-title"></h1><div id="ov-text"></div><p>Nhấn <b>R</b> để chơi lại</p></div></div>
+    <div id="fps"></div>
+
+    <!-- screens -->
+    <div id="s-menu" class="screen on"><div class="card">
+      <h1>Đảo Đèn Lồng</h1><h2>Ba hòn đảo · ba đêm sương</h2>
+      <p>Giúp Mây gom đom đóm, thắp lại các Đèn Lồng Lớn trước bình minh.</p>
+      <div class="btns"><button data-act="start">Bắt đầu Đêm 1</button><button data-act="night2">Chơi Đêm 2</button><button data-act="night3">Chơi Đêm 3</button><button data-act="settings">Cài đặt</button></div>
+      <p style="font-size:13px;opacity:.75">WASD di chuyển · kéo chuột xoay camera · Space nhảy · Shift lướt · E nạp đèn · F tỏa sáng · Esc/P tạm dừng</p>
+    </div></div>
+    <div id="s-intro" class="screen"><div class="card">
+      <h2 id="i-night"></h2><h1 id="i-name"></h1><p class="quote" id="i-quote"></p>
+      <div class="btns"><button data-act="play">Vào đêm</button></div>
+    </div></div>
+    <div id="s-result" class="screen"><div class="card">
+      <h1 id="r-title"></h1><p id="r-text"></p>
+      <div class="btns" id="r-btns"></div>
+    </div></div>
+    <div id="s-dawn" class="screen" style="background:linear-gradient(#ffb34799,#0e1430ee)"><div class="card">
+      <h1>Bình Minh</h1><h2>Ba hòn đảo đã sáng trở lại</h2><p id="d-text"></p>
+      <div class="btns"><button data-act="menu">Về menu</button></div>
+    </div></div>
+    <div id="s-pause" class="screen"><div class="card">
+      <h1>Tạm dừng</h1>
+      <div class="btns"><button data-act="resume">Tiếp tục</button><button data-act="retry">Chơi lại Đêm</button><button data-act="settings">Cài đặt</button><button data-act="menu">Về menu</button></div>
+    </div></div>
+    <div id="s-settings" class="screen"><div class="card">
+      <h1>Cài đặt</h1>
+      <label>Âm lượng <input id="set-vol" type="range" min="0" max="1" step="0.05" /></label>
+      <label>Độ nhạy chuột <input id="set-sens" type="range" min="0.1" max="1" step="0.05" /></label>
+      <div class="btns"><button data-act="settings-back">Xong</button></div>
+    </div></div>
     <script type="module" src="/src/web/main.js"></script>
   </body>
 </html>
