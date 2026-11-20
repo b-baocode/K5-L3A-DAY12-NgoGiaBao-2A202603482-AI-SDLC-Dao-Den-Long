@@ -73,9 +73,11 @@ export class Game {
    * @param {object} tuning contract tuning block
    * @param {object} opts { seed, night=1, scenario (validated), extras=false }
    *   extras: creative content. ONLY the web game turns it on; headless never does.
+   *   bench: Ticket-04 benchmark scene — no spawns, damage, pickups, fuel decay or night end; shades stay in wander.
    */
-  constructor(tuning, { seed = 0, night = 1, scenario = null, extras = false } = {}) {
+  constructor(tuning, { seed = 0, night = 1, scenario = null, extras = false, bench = false } = {}) {
     this.t = tuning;
+    this.bench = bench;
     this.night = night;
     this.map = NIGHTS[night];
     this.extras = extras;
@@ -291,7 +293,7 @@ export class Game {
     for (const c of this.charms) if (!c.available && c.respawnTicks > 0 && --c.respawnTicks === 0) c.available = true;
     // fuel: natural decay + drain by shades in 'drain'; right after, lanterns at fuel <= 0 go out (Ticket-03)
     for (const l of this.lanterns) {
-      if (!l.lit) continue;
+      if (!l.lit || this.bench) continue;
       const drainers = this.shades.filter((s) => s.state === 'drain' && s.target === l.id).sort(byId);
       l.fuel -= Math.round(t.fuel_decay_per_s) + Math.round(t.drain_per_s) * drainers.length;
       for (const s of drainers) {
@@ -326,7 +328,7 @@ export class Game {
     if (p.fallWaitTicks === 0) this.movePlayer(pressed, ev);
 
     // 4. pick up motes and charms
-    if (p.fallWaitTicks === 0) this.pickup(ev);
+    if (p.fallWaitTicks === 0 && !this.bench) this.pickup(ev);
 
     // 5. lanterns
     if (pressed.interact && p.carried > 0 && p.fallWaitTicks === 0) this.interact(ev);
@@ -342,7 +344,8 @@ export class Game {
     this.moveDrifters();
 
     // 9. touches: drifters steal first, then shades hit (ascending id)
-    if (p.fallWaitTicks === 0) this.touches(ev);
+    if (p.fallWaitTicks === 0 && !this.bench) this.touches(ev);
+    if (this.bench) return; // bench scene: no spawns, no night end
 
     // 10. spawns (new entities interact from the next tick)
     if (this.randomMotes && st % RULES.moteSpawnEvery === 0 && this.motes.length < RULES.moteCap) this.spawnMoteAtFreePoint();
@@ -670,7 +673,7 @@ export class Game {
   moveShades() {
     const p = this.player;
     const speed = (this.t.shade_speed * this.map.shadeSpeedMul) / TICK_RATE;
-    const visible = p.fallWaitTicks === 0;
+    const visible = p.fallWaitTicks === 0 && !this.bench; // bench: shades keep wandering
     for (const s of this.shades) {
       if (s.evict) {
         s.pos[0] += s.evict.dir[0] * s.evict.perTick;
@@ -724,7 +727,8 @@ export class Game {
   nearestLantern(s, pred) {
     let best = null;
     let bestD = Infinity;
-    for (const l of [...this.lanterns].sort(byId)) {
+    this.lanternsById ||= [...this.lanterns].sort(byId); // sorted once: no per-shade, per-tick allocation
+    for (const l of this.lanternsById) {
       if (!pred(l)) continue;
       const d = distXZ(s.pos, l.pos);
       if (d < bestD - 1e-12) { best = l; bestD = d; }
