@@ -1,12 +1,15 @@
 # AGENTS.md — Đảo Đèn Lồng
 
-3D third-person game (Three.js + Vite), 3 nights, with a headless mode graded by **Test Contract v1.2** (Ticket-03 lantern fuel).
+3D third-person game (Three.js + Vite), 3 nights, with a headless mode graded by **Test Contract v1.3** (Ticket-04 release: bench, soak, leaderboard).
 
 ## Commands
 - Install: `npm install` · Play: `npm start` · Build: `npm run build`
 - Test (must be green before you finish): `npm test`
 - Headless: `node src/headless.js --seed 1 --night <1|2|3> --ticks 600 --out out.jsonl [--scenario f] [--inputs f] [--snapshot-every N]`
 - Proof (regenerates docs/proof/<phase>/): `npm run proof -- phase-N`
+- Play: `node scripts/run.js` (serves dist/, leaderboard API -> data/leaderboard.json; `--export-leaderboard f`)
+- Bench (real browser window, needs a display): `node scripts/bench.js --seed 42 --duration 30 --out bench.json`
+- Soak: `node --expose-gc scripts/soak.js --seed 7 --nights 10 --out soak.json`
 
 ## Layout
 - `src/sim/` — ALL game rules. Pure JS, no DOM, no `Math.random`, no wall clock. Deterministic via `rng.js`.
@@ -29,6 +32,9 @@
 - Distances are XZ only, "within r" means `<= r`. Round output coords to 3 decimals.
 - Creative extras must not change headless output: they sit behind `extras` (web only); `tests/extras.test.js` forbids `extras` in headless.js.
 - Unclear ticket point -> write the assumption in `docs/notes/phase-N.md` (A-numbered) before coding it.
+- Never measure FPS with SwiftShader/headless and call it evidence: use a real window (bench.js / puppeteer headful).
+- Many entities -> InstancedMesh/Points, shared materials, no per-frame/per-tick allocations in hot loops.
+- `src/sim` options `extras` (web only) and `bench` (bench scene only) must stay off in headless/soak.
 - When a new phase replaces a rule: update the test with a one-line reason; never delete or skip a test silently.
 - Never write tests that always pass; never edit files in `docs/proof/` by hand.
 - Small commits, one concern each.

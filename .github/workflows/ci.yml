@@ -12,6 +12,9 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true' # bench needs a display; CI runs everything else
       - run: npm test
+      - run: node --expose-gc scripts/soak.js --seed 7 --nights 10 --out soak-ci.json
       - run: npm run proof -- ci-check
       - run: npm run build
