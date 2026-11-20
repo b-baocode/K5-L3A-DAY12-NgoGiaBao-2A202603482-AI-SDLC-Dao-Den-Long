@@ -8,8 +8,8 @@ import { ROOT, CONTRACT, headless, readJsonl, tmpDir } from './helpers.js';
 const SC = path.join(ROOT, 'scenarios');
 
 test('contract file: required fields present', () => {
-  assert.equal(CONTRACT.contract_version, '1.2');
-  for (const k of ['team', 'build_cmd', 'run_cmd', 'headless_cmd']) assert.equal(typeof CONTRACT[k], 'string');
+  assert.equal(CONTRACT.contract_version, '1.3'); // Ticket-04: v1.3 adds bench_cmd and soak_cmd
+  for (const k of ['team', 'build_cmd', 'run_cmd', 'headless_cmd', 'bench_cmd', 'soak_cmd']) assert.equal(typeof CONTRACT[k], 'string');
   const keys = ['player_speed', 'carry_capacity', 'lantern_cost', 'lantern_count_night1', 'pickup_radius',
     'interact_radius', 'pulse_cost', 'pulse_radius', 'night1_duration_s', 'flames', 'invuln_s', 'hit_drop_ratio',
     'pulse_stun_s', 'pulse_push_m', 'pulse_cooldown_s', 'safe_radius', 'shade_speed', 'shade_hit_radius', 'fall_enabled',
