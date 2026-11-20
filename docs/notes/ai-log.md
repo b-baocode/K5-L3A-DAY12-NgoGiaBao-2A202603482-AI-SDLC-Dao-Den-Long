@@ -35,3 +35,13 @@ Token ước tính Phase 2: _(điền từ `/cost`)_. Cách tiết kiệm: viế
 | Lỗi AI | 3 kỳ vọng sai trong test/proof (dầu đã hao trước khi châm, khoảng cách 5.9 < 6, đèn vừa thắp vẫn nhận châm); FPS giảm do hạt tạo material mới | Sửa kỳ vọng theo câu chữ ticket; ghi nợ kỹ thuật FPS cho Phase 4 |
 
 Token ước tính Phase 3: _(điền từ `/cost`)_. Cách tiết kiệm: sửa sim bằng một script thay thế có kiểm tra (assert mỗi đoạn) thay vì nhiều lần edit; một file test mới cho luật mới thay vì vá rải rác.
+
+## Phase 4
+| Bước | Việc AI làm | Tôi kiểm tra / quyết định |
+|---|---|---|
+| Đọc ticket | Ưu tiên phần chấm tự động (bench, soak, contract v1.3), rồi bảng xếp hạng, a11y, tài liệu | Chọn lưu bảng xếp hạng trên đĩa qua `run.js` |
+| Build | `scripts/soak.js`, `scripts/bench.js` (puppeteer), `src/sim/bench.js`, `src/sim/leaderboard.js`, `scripts/run.js`, UI bảng xếp hạng, đổi phím, phụ đề, giảm chuyển động, chữ lớn | Đọc diff |
+| Kiểm chứng | 69 test; e2e trong Edge (lưu điểm, export, trùng phím, min font 18 px); 6 lần chạy bench có in thời điểm khung khựng | Xem ảnh, đọc bench.json |
+| Lỗi AI | Đo FPS bằng SwiftShader; cờ trình duyệt cho số ảo; khung khởi động tính vào đo; WMI gây khựng; phím game nuốt chữ khi gõ tên | Đổi sang cửa sổ thật; mỗi giả thuyết một lần đo đối chứng |
+
+Token ước tính Phase 4: _(điền từ `/cost`)_.

@@ -1,0 +1,95 @@
+{
+  "nights": 10,
+  "crashes": 0,
+  "results": [
+    "lost",
+    "lost",
+    "lost",
+    "lost",
+    "lost",
+    "lost",
+    "lost",
+    "lost",
+    "lost",
+    "lost"
+  ],
+  "mem_start_mb": 45,
+  "mem_end_mb": 50.9,
+  "duration_s": 0.1,
+  "seed": 7,
+  "night_cycle": [
+    "Đảo Bến",
+    "Đảo Cau",
+    "Đảo Chuông",
+    "Đảo Bến",
+    "Đảo Cau",
+    "Đảo Chuông",
+    "Đảo Bến",
+    "Đảo Cau",
+    "Đảo Chuông",
+    "Đảo Bến"
+  ],
+  "per_night": [
+    {
+      "night": 1,
+      "seed": 7,
+      "ticks": 2445,
+      "reason": "no_flames"
+    },
+    {
+      "night": 2,
+      "seed": 8,
+      "ticks": 945,
+      "reason": "no_flames"
+    },
+    {
+      "night": 3,
+      "seed": 9,
+      "ticks": 1269,
+      "reason": "no_flames"
+    },
+    {
+      "night": 1,
+      "seed": 10,
+      "ticks": 1148,
+      "reason": "no_flames"
+    },
+    {
+      "night": 2,
+      "seed": 11,
+      "ticks": 928,
+      "reason": "no_flames"
+    },
+    {
+      "night": 3,
+      "seed": 12,
+      "ticks": 1418,
+      "reason": "no_flames"
+    },
+    {
+      "night": 1,
+      "seed": 13,
+      "ticks": 1509,
+      "reason": "no_flames"
+    },
+    {
+      "night": 2,
+      "seed": 14,
+      "ticks": 1714,
+      "reason": "no_flames"
+    },
+    {
+      "night": 3,
+      "seed": 15,
+      "ticks": 2757,
+      "reason": "no_flames"
+    },
+    {
+      "night": 1,
+      "seed": 16,
+      "ticks": 2419,
+      "reason": "no_flames"
+    }
+  ],
+  "pass": true
+}

@@ -1,6 +1,23 @@
 # Changelog
 
-## [Unreleased] — làm đẹp đồ họa (chuẩn bị Phase 4)
+## [v1.0.0 / phase-4] — Ticket-04 "Bình minh: phát hành v1.0.0", Test Contract v1.3
+
+### ⚠ Breaking changes
+- **Contract 1.2 → 1.3:** thêm `bench_cmd` (`node scripts/bench.js`) và `soak_cmd` (`node --expose-gc scripts/soak.js`).
+- **`run_cmd`** đổi từ `npm start` (vite dev) sang `node scripts/run.js` (server tĩnh + API bảng xếp hạng, tự build lần đầu; nhận `--export-leaderboard`). `build_cmd` = `npm install && npm run build`.
+- Sim nhận tùy chọn `bench` (mặc định tắt; headless không đổi — 19 scenario giống từng byte phase-3).
+
+### Added
+- Benchmark cảnh chuẩn (200 Bóng Mực, 100 đom đóm, camera bay vòng) → `bench.json`. Soak 10 Đêm → `soak.json`.
+- Bảng xếp hạng top 10 lưu đĩa (`data/leaderboard.json`), nhập tên sau Bình Minh hoặc khi thua, màn hình từ menu, xuất JSON.
+- Dễ tiếp cận: đổi phím 9 hành động (báo trùng, khôi phục mặc định), phụ đề/chỉ báo (Bóng Mực xuất hiện + mũi tên mép màn hình, gió sắp thổi, 10 s cuối, đèn sắp cạn), giảm chuyển động, chữ ≥ 18 px và tùy chọn ×1.25.
+- Retro, ghi chú Phase 4, BENCH.md.
+
+### Fixed / performance
+- Bóng Mực vẽ bằng InstancedMesh, đom đóm bằng Points (~850 → ~45 draw call trong bench). Biên dịch shader trước khi chơi (hết giật khi camera quay). Không cấp phát mảng mỗi tick khi tìm đèn gần nhất.
+- Ô nhập tên không còn bị phím game "nuốt" chữ.
+
+## [Unreleased → v1.0.0] — làm đẹp đồ họa (giữa Phase 3 và 4)
 - Phong cách low-poly theo brief: trời gradient + sao lấp lánh, biển mây gợn, đảo có mặt dưới bằng đá, đá tinh thể, cây low-poly, cỏ InstancedMesh lay theo gió (mạnh hơn khi Gió mạnh Đêm 3).
 - Đom đóm và hạt sáng dạng sprite phát sáng (additive), Bóng Mực có viền fresnel phát sáng và mắt.
 - Hậu kỳ: bloom (½ độ phân giải) + vignette, bật/tắt trong Cài đặt, tự tắt nếu FPS < 28 trong 4 s.
