@@ -150,16 +150,23 @@ export function makeRock(rnd, color, size) {
   return new THREE.Mesh(geo, rockMat(color));
 }
 
-// ---------- Bóng Mực: dark body with a glowing fresnel rim ----------
+// ---------- Bóng Mực: dark body with a glowing fresnel rim (instanced: one draw call for every shade) ----------
 export function makeShadeMaterial(body, rim, stun) {
   return new THREE.ShaderMaterial({
-    uniforms: { uBody: { value: new THREE.Color(body) }, uRim: { value: rim }, uStun: { value: new THREE.Color(stun) }, uStunned: { value: 0 }, uTime: windUniforms.uTime },
-    vertexShader: `varying vec3 vN; varying vec3 vV;
-      void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: `uniform vec3 uBody; uniform vec3 uRim; uniform vec3 uStun; uniform float uStunned; uniform float uTime; varying vec3 vN; varying vec3 vV;
+    uniforms: { uBody: { value: new THREE.Color(body) }, uRim: { value: rim }, uStun: { value: new THREE.Color(stun) }, uTime: windUniforms.uTime },
+    vertexShader: `attribute float aStun; varying float vStun; varying vec3 vN; varying vec3 vV;
+      void main(){
+        mat4 im = mat4(1.0);
+        #ifdef USE_INSTANCING
+          im = instanceMatrix;
+        #endif
+        vec4 mv = modelViewMatrix * im * vec4(position, 1.0);
+        vN = normalize(normalMatrix * mat3(im) * normal); vV = normalize(-mv.xyz); vStun = aStun;
+        gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: `uniform vec3 uBody; uniform vec3 uRim; uniform vec3 uStun; uniform float uTime; varying float vStun; varying vec3 vN; varying vec3 vV;
       void main(){ float f = pow(1.0 - max(dot(normalize(vN), normalize(vV)), 0.0), 2.2);
-        vec3 body = mix(uBody, uStun, uStunned);
-        vec3 rim = uRim * (1.6 + 0.4 * sin(uTime * 3.0)) * (1.0 - uStunned * 0.85);
+        vec3 body = mix(uBody, uStun, vStun);
+        vec3 rim = uRim * (1.6 + 0.4 * sin(uTime * 3.0)) * (1.0 - vStun * 0.85);
         gl_FragColor = vec4(body + rim * f, 1.0); }`,
   });
 }

@@ -68,6 +68,36 @@
       .btns button:first-child { background: linear-gradient(180deg, #ffb347, #e8902a); color: #1b1230; font-weight: 800; border-color: #ffe9b0; }
       label.check { display: flex; gap: 10px; align-items: center; }
       input[type=checkbox] { width: 18px; height: 18px; accent-color: #ffb347; }
+      /* ---- Ticket-04 accessibility: every UI text >= 18 px at 1280x720, x1.25 "large text" option ---- */
+      :root { --k: 1; }
+      body.large { --k: 1.25; }
+      body { font-size: calc(18px * var(--k)); }
+      #h-goal, #h-right, #h-charm, #h-wind, #h-carry, #legend, #fps, button, .card p, .card h2, label, .kb-row, #lb-table, #name-err, #kb-warn { font-size: calc(18px * var(--k)) !important; }
+      #h-right b { font-size: calc(26px * var(--k)) !important; }
+      #h-time { font-size: calc(30px * var(--k)) !important; }
+      #h-flames { font-size: calc(26px * var(--k)) !important; }
+      #h-prompt, #toast { font-size: calc(20px * var(--k)) !important; }
+      .cd { width: calc(84px * var(--k)) !important; height: calc(84px * var(--k)) !important; font-size: calc(18px * var(--k)) !important; }
+      .card h1 { font-size: calc(40px * var(--k)) !important; }
+      #legend { top: calc(150px * var(--k)); line-height: 1.5; }
+      #legend i { width: 12px; height: 12px; }
+      #s-menu .card p:last-child { font-size: calc(18px * var(--k)) !important; }
+      /* reduced motion: no camera shake / screen flash / blinking timer */
+      body.reduce #h-time.danger { animation: none; }
+      #flash { position: fixed; inset: 0; pointer-events: none; opacity: 0; z-index: 5; }
+      #shade-arrow { position: fixed; width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-bottom: 30px solid #7a3cff; filter: drop-shadow(0 0 6px #7a3cff); display: none; pointer-events: none; z-index: 4; }
+      body.cb #shade-arrow { border-bottom-color: #00b3ff; }
+      .kb-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; margin: 6px 0; text-align: left; }
+      .kb-row button { min-width: 130px; padding: 6px 12px; }
+      .kb-row button.dup { border-color: var(--danger); color: var(--danger); }
+      #kb-warn { color: var(--danger); min-height: 1.4em; }
+      body.cb #kb-warn::before, body.cb #name-err::before { content: '⚠ '; }
+      #s-settings .card { max-height: 90vh; overflow-y: auto; }
+      #lb-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+      #lb-table th, #lb-table td { padding: 6px 8px; border-bottom: 1px solid #ffffff22; text-align: left; }
+      #lb-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+      #name-input { font: inherit; font-size: calc(22px * var(--k)); padding: 8px 12px; width: 100%; box-sizing: border-box; border-radius: 10px; border: 1px solid var(--lamp); background: #0e1430; color: var(--ui); }
+      #name-err { color: var(--danger); min-height: 1.4em; }
     </style>
   </head>
   <body>
@@ -89,15 +119,17 @@
       Đom đóm<i style="background:#fff6c2"></i><br />Vàng Kim ×2<i style="background:#ffa800"></i><br />Ngọc Lam +1 lửa<i style="background:#5fffe0"></i><br />
       Mực Lướt: nhanh<i class="rimdot" style="background:#7a3cff"></i><br />Mực Khổng Lồ: với xa<i style="background:#120a1a;border:1px solid #7a3cff"></i><br />Gió Lạc: cướp đom đóm<i style="background:#8fa3b8"></i>
     </div>
-    <div id="toast"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="flash"></div>
+    <div id="shade-arrow"></div>
     <div id="fps"></div>
 
     <!-- screens -->
     <div id="s-menu" class="screen on"><div class="card">
       <h1>Đảo Đèn Lồng</h1><h2>Ba hòn đảo · ba đêm sương</h2>
       <p>Giúp Mây gom đom đóm, thắp và <b>giữ</b> các Đèn Lồng Lớn sáng tới bình minh. Đèn cạn dầu sẽ tắt — châm thêm đom đóm để giữ lửa!</p>
-      <div class="btns"><button data-act="start">Bắt đầu Đêm 1</button><button data-act="night2">Chơi Đêm 2</button><button data-act="night3">Chơi Đêm 3</button><button data-act="settings">Cài đặt</button></div>
-      <p style="font-size:13px;opacity:.75">WASD di chuyển · kéo chuột xoay camera · Space nhảy · Shift lướt · E nạp đèn · F tỏa sáng · Esc/P tạm dừng</p>
+      <div class="btns"><button data-act="start">Bắt đầu Đêm 1</button><button data-act="night2">Chơi Đêm 2</button><button data-act="night3">Chơi Đêm 3</button><button data-act="leaderboard">Bảng xếp hạng</button><button data-act="settings">Cài đặt</button></div>
+      <p style="opacity:.75">WASD di chuyển · kéo chuột xoay camera · Space nhảy · Shift lướt · E nạp đèn · F tỏa sáng · Esc/P tạm dừng · đổi phím trong Cài đặt</p>
     </div></div>
     <div id="s-intro" class="screen"><div class="card">
       <h2 id="i-night"></h2><h1 id="i-name"></h1><p class="quote" id="i-quote"></p>
@@ -109,11 +141,22 @@
     </div></div>
     <div id="s-dawn" class="screen" style="background:linear-gradient(#ffb34799,#0e1430ee)"><div class="card">
       <h1>Bình Minh</h1><h2>Ba hòn đảo đã sáng trở lại</h2><p id="d-text"></p>
-      <div class="btns"><button data-act="menu">Về menu</button></div>
+      <div class="btns"><button data-act="save-score">Lưu điểm vào bảng xếp hạng</button><button data-act="menu">Về menu</button></div>
     </div></div>
     <div id="s-pause" class="screen"><div class="card">
       <h1>Tạm dừng</h1>
       <div class="btns"><button data-act="resume">Tiếp tục</button><button data-act="retry">Chơi lại Đêm</button><button data-act="settings">Cài đặt</button><button data-act="menu">Về menu</button></div>
+    </div></div>
+    <div id="s-name" class="screen"><div class="card">
+      <h1>Lưu điểm</h1><p id="name-score"></p>
+      <input id="name-input" maxlength="12" placeholder="Tên của bạn (3–12 ký tự)" autocomplete="off" />
+      <div id="name-err" role="alert"></div>
+      <div class="btns"><button data-act="name-save">Lưu</button><button data-act="name-skip">Bỏ qua</button></div>
+    </div></div>
+    <div id="s-lb" class="screen"><div class="card" style="min-width:min(560px,90vw)">
+      <h1>Bảng xếp hạng</h1>
+      <table id="lb-table"><thead><tr><th>#</th><th>Tên</th><th class="num">Điểm</th><th class="num">Đêm thắng</th><th>Ngày</th></tr></thead><tbody></tbody></table>
+      <div class="btns"><button data-act="menu">Về menu</button></div>
     </div></div>
     <div id="s-settings" class="screen"><div class="card">
       <h1>Cài đặt</h1>
@@ -121,6 +164,12 @@
       <label>Độ nhạy chuột <input id="set-sens" type="range" min="0.1" max="1" step="0.05" /></label>
       <label class="check"><input id="set-cb" type="checkbox" /> Bảng màu dễ phân biệt (mù màu)</label>
       <label class="check"><input id="set-post" type="checkbox" /> Hiệu ứng hậu kỳ (bloom, vignette)</label>
+      <label class="check"><input id="set-reduce" type="checkbox" /> Giảm chuyển động (tắt rung camera, chớp màn hình)</label>
+      <label class="check"><input id="set-large" type="checkbox" /> Chữ lớn (×1.25)</label>
+      <h2 style="margin-top:16px">Phím điều khiển</h2>
+      <div id="kb-list"></div>
+      <div id="kb-warn" role="alert"></div>
+      <button data-act="kb-reset">Khôi phục mặc định</button>
       <div class="btns"><button data-act="settings-back">Xong</button></div>
     </div></div>
     <script type="module" src="/src/web/main.js"></script>
