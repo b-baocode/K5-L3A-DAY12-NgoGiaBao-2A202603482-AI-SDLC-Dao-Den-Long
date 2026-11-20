@@ -43,8 +43,31 @@
       button:hover, button:focus-visible { background: #ffb34755; outline: none; }
       label { display: grid; gap: 4px; text-align: left; margin: 10px 0; }
       input[type=range] { width: 100%; accent-color: var(--lamp); }
-      #legend { position: fixed; top: 88px; right: 16px; font-size: 12px; line-height: 1.7; text-align: right; opacity: .8; pointer-events: none; text-shadow: 0 1px 3px #000; }
+      #legend { position: fixed; top: 130px; right: 16px; font-size: 12px; line-height: 1.7; text-align: right; opacity: .8; pointer-events: none; text-shadow: 0 1px 3px #000; }
       #legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+      /* ---- visual polish (Phase 4 brief) ---- */
+      html, body { font-family: 'Nunito', 'Segoe UI Rounded', 'Segoe UI', system-ui, sans-serif; }
+      .hud { text-shadow: 0 2px 6px rgba(0,0,0,.65); }
+      #h-flames { background: rgba(14,20,48,.45); padding: 6px 12px; border-radius: 999px; border: 1px solid #ffb34740; backdrop-filter: blur(6px); }
+      #h-time { background: rgba(14,20,48,.45); padding: 4px 18px; border-radius: 999px; border: 1px solid #f2c14e55; backdrop-filter: blur(6px); letter-spacing: 1px; }
+      #h-right { background: rgba(14,20,48,.45); padding: 8px 14px; border-radius: 14px; border: 1px solid #ffb34740; backdrop-filter: blur(6px); }
+      #h-right b { text-shadow: 0 0 12px #f2c14e88; }
+      #h-motes { background: rgba(14,20,48,.45); padding: 7px 10px; border-radius: 999px; backdrop-filter: blur(6px); }
+      #h-motes i { width: 16px; height: 16px; }
+      .cd { border-radius: 16px; backdrop-filter: blur(6px); box-shadow: inset 0 0 12px #0008; }
+      .cd.ready { box-shadow: 0 0 14px #ffb34766, inset 0 0 10px #ffb34733; }
+      #h-prompt { border-radius: 999px; padding: 8px 18px; backdrop-filter: blur(6px); box-shadow: 0 0 18px #ffb34744; }
+      #legend { background: rgba(14,20,48,.35); padding: 6px 10px; border-radius: 12px; }
+      .screen { background: radial-gradient(ellipse at center, rgba(14,20,48,.25), rgba(8,10,28,.78)); backdrop-filter: blur(2px); }
+      .card { background: linear-gradient(160deg, rgba(27,35,80,.88), rgba(14,20,48,.92)); border: 1px solid #f2c14e66; box-shadow: 0 20px 60px #000a, 0 0 40px #ffb34722; border-radius: 22px; }
+      .card h1 { font-size: 40px; letter-spacing: .5px; text-shadow: 0 0 24px #ffb34799; }
+      #s-menu .card h1 { font-size: 52px; }
+      #s-menu .card h1::before { content: '🏮 '; }
+      button { border-radius: 999px; background: linear-gradient(180deg, #ffb34733, #ffb34714); transition: transform .12s, box-shadow .12s, background .12s; }
+      button:hover, button:focus-visible { transform: translateY(-1px); box-shadow: 0 0 18px #ffb34766; background: linear-gradient(180deg, #ffb34766, #ffb34722); }
+      .btns button:first-child { background: linear-gradient(180deg, #ffb347, #e8902a); color: #1b1230; font-weight: 800; border-color: #ffe9b0; }
+      label.check { display: flex; gap: 10px; align-items: center; }
+      input[type=checkbox] { width: 18px; height: 18px; accent-color: #ffb347; }
     </style>
   </head>
   <body>
@@ -96,7 +119,8 @@
       <h1>Cài đặt</h1>
       <label>Âm lượng <input id="set-vol" type="range" min="0" max="1" step="0.05" /></label>
       <label>Độ nhạy chuột <input id="set-sens" type="range" min="0.1" max="1" step="0.05" /></label>
-      <label style="display:flex;gap:10px;align-items:center"><input id="set-cb" type="checkbox" /> Bảng màu dễ phân biệt (mù màu)</label>
+      <label class="check"><input id="set-cb" type="checkbox" /> Bảng màu dễ phân biệt (mù màu)</label>
+      <label class="check"><input id="set-post" type="checkbox" /> Hiệu ứng hậu kỳ (bloom, vignette)</label>
       <div class="btns"><button data-act="settings-back">Xong</button></div>
     </div></div>
     <script type="module" src="/src/web/main.js"></script>
