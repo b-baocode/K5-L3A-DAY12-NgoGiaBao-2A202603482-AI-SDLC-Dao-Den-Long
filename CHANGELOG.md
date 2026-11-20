@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased] — làm đẹp đồ họa (chuẩn bị Phase 4)
+- Phong cách low-poly theo brief: trời gradient + sao lấp lánh, biển mây gợn, đảo có mặt dưới bằng đá, đá tinh thể, cây low-poly, cỏ InstancedMesh lay theo gió (mạnh hơn khi Gió mạnh Đêm 3).
+- Đom đóm và hạt sáng dạng sprite phát sáng (additive), Bóng Mực có viền fresnel phát sáng và mắt.
+- Hậu kỳ: bloom (½ độ phân giải) + vignette, bật/tắt trong Cài đặt, tự tắt nếu FPS < 28 trong 4 s.
+- Menu/giới thiệu/Bình Minh: camera lượn chậm quanh đảo. HUD và menu thiết kế lại (khung kính mờ, nút nổi bật).
+- Hiệu năng: vật liệu Lambert dùng chung theo màu, hạt sáng dùng chung material, pixel ratio tối đa 1.25.
+- Không đổi logic/headless: 63 test và proof giữ nguyên.
+
 ## [phase-3] — Ticket-03 "Đèn cạn dầu", Test Contract v1.2
 
 ### ⚠ Breaking changes
