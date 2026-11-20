@@ -13,3 +13,14 @@ Công cụ: **Claude Code** (model Claude Opus 5.5) trong VS Code. Harness: `AGE
 
 Token ước tính Phase 1: _(điền số từ `/cost` hoặc trang usage của bạn)_.
 Cách tiết kiệm: đọc tài liệu một lần rồi tóm tắt; tuning một nguồn tránh vòng sửa lệch số; test CLI bằng scenario nhỏ thay vì cho agent chạy game nhiều lần.
+
+## Phase 2
+| Bước | Việc AI làm | Tôi kiểm tra / quyết định |
+|---|---|---|
+| Đọc ticket | Lab board tải ticket từ database riêng, AI không đọc được → tôi lưu trang (Ctrl+S) cho AI trích nội dung | Đối chiếu với bản tôi tự copy |
+| Thiết kế | Tách bản đồ thành dữ liệu (`maps.js`), viết lại `step()` theo 12 bước bắt buộc | Duyệt giả định A21–A33; 4 điểm cần hỏi trợ giảng |
+| Build | Sim v1.1, headless `--night`, validate scenario mới; web: 3 bản đồ, menu, pause, cài đặt, HUD, âm thanh | Đọc diff |
+| Kiểm chứng | 51 test, 14 scenario proof ×2 lần, mutation check, ảnh và FPS trong Edge | Xem ảnh từng Đêm |
+| Lỗi AI | Test tự viết sai (không nhả nút, lệch 1 tick); một test không bắt được lỗi tâm Tỏa Sáng; scenario cũ không còn hợp lệ; cảnh quá tối, FPS thấp do nhiều point light | Sửa test, ghi quy tắc vào AGENTS.md; thêm case biên; chỉnh scenario; tắt đèn điểm của đèn chưa nạp |
+
+Token ước tính Phase 2: _(điền từ `/cost`)_. Cách tiết kiệm: viết lại `step()` một lần theo thứ tự ticket thay vì vá dần; chạy test từng file khi sửa; mỗi tính năng một scenario nhỏ.
