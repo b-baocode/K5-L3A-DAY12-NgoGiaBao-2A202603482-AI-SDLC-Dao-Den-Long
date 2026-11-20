@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// Headless runner — Test Contract v1.0.
-// node src/headless.js --seed <int> --night 1 [--scenario f.json] [--inputs f.json]
+// Headless runner — Test Contract v1.1.
+// node src/headless.js --seed <int> --night <1-3> [--scenario f.json] [--inputs f.json]
 //                      --ticks <int> --out f.jsonl [--snapshot-every <int>]
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Game } from './sim/game.js';
+import { Game, NIGHTS } from './sim/game.js';
 import { InputError, validateInputs, validateScenario } from './sim/validate.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,7 +36,8 @@ function parseArgs(argv) {
   if (opts.seed === undefined) throw new UsageError('--seed is required');
   if (opts.ticks === undefined || opts.ticks < 0) throw new UsageError('--ticks is required (>= 0)');
   if (!opts.out) throw new UsageError('--out is required');
-  if (opts.night !== undefined && opts.night !== 1) throw new UsageError('only --night 1 exists in this version');
+  if (opts.night === undefined) opts.night = 1;
+  if (![1, 2, 3].includes(opts.night)) throw new UsageError('--night must be 1, 2 or 3');
   if (opts.snapshotEvery < 1) throw new UsageError('--snapshot-every must be >= 1');
   return opts;
 }
@@ -59,22 +60,24 @@ export function run(opts) {
   const contract = JSON.parse(fs.readFileSync(path.join(ROOT, 'game.contract.json'), 'utf8'));
   const tuning = contract.tuning;
   const scenario = opts.scenario
-    ? validateScenario(readJson(opts.scenario, 'scenario'), tuning.lantern_count_night1)
+    ? validateScenario(readJson(opts.scenario, 'scenario'), NIGHTS[opts.night].lanterns.length)
     : null;
   const frames = opts.inputs ? validateInputs(readJson(opts.inputs, 'inputs')) : new Map();
 
-  const game = new Game(tuning, { seed: opts.seed, scenario });
+  const game = new Game(tuning, { seed: opts.seed, night: opts.night, scenario });
   const lines = [];
   const every = opts.snapshotEvery;
   lines.push(JSON.stringify(game.snapshot())); // tick 0: after scenario, before input
+  lines.push(JSON.stringify({ type: 'event', tick: 0, name: 'night_start', data: { night: opts.night } })); // ASSUMPTION A24
 
-  for (let k = 0; k < opts.ticks && game.state === 'playing'; k++) {
+  const over = () => game.state === 'won' || game.state === 'lost';
+  for (let k = 0; k < opts.ticks && !over(); k++) {
     game.applyFrame(frames.get(k));
     game.step();
     for (const e of game.drainEvents()) lines.push(JSON.stringify(e));
-    if (game.steps % every === 0) lines.push(JSON.stringify(game.snapshot()));
+    if (game.tick % every === 0) lines.push(JSON.stringify(game.snapshot()));
   }
-  lines.push(JSON.stringify({ type: 'end', ticks: game.steps, state: game.state, score: game.score }));
+  lines.push(JSON.stringify({ type: 'end', ticks: game.tick, state: game.state, score: game.score }));
   fs.writeFileSync(opts.out, lines.join('\n') + '\n');
   return game;
 }
